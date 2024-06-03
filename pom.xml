@@ -1,0 +1,165 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+  </properties>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>cryptotrade</groupId>
+  <artifactId>cryptotrade</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  <build>
+    <directory>target</directory>
+    <plugins>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.8.1</version>
+        <configuration>
+          <release>11</release>
+        </configuration>
+      </plugin>
+      <!-- 指定啟動類，將依賴打成外部jar包 -->
+      <plugin>
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>3.2.2</version>
+        <configuration>
+          <archive>
+            <!-- 生成的jar中，不要包含pom.xml和pom.properties這兩個檔案 -->
+            <addMavenDescriptor>false</addMavenDescriptor>
+            <manifest>
+              <!-- 是否要把第三方jar加入到類構建路徑 -->
+              <addClasspath>true</addClasspath>
+              <!-- 外部依賴jar包的最終位置 -->
+              <classpathPrefix>lib/</classpathPrefix>
+              <!-- 專案啟動類 -->
+              <mainClass>org.cryptotrade.App</mainClass>
+            </manifest>
+            <!-- 指定配置檔案目錄，這樣jar執行時會去找到同目錄下的conf資料夾下查詢 -->
+            <manifestEntries>
+              <Class-Path>conf/</Class-Path>
+            </manifestEntries>
+          </archive>
+          <!-- 打包時忽略的檔案（也就是不打進jar包裡的檔案） -->
+          <excludes>
+            <exclude>*.yml</exclude>
+            <exclude>*.xml</exclude>
+          </excludes>
+          <outputDirectory>target/package/</outputDirectory>
+        </configuration>
+      </plugin>
+      <!--拷貝依賴到jar外面的lib目錄-->
+      <plugin>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>copy-lib</id>
+            <phase>package</phase>
+            <goals>
+              <goal>copy-dependencies</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>target/package/lib</outputDirectory>
+              <excludeTransitive>false</excludeTransitive>
+              <stripVersion>false</stripVersion>
+              <includeScope>compile</includeScope>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <!-- 拷貝資原始檔 外面的resource目錄-->
+      <plugin>
+        <artifactId>maven-resources-plugin</artifactId>
+        <version>3.3.0</version>
+        <executions>
+          <execution>
+            <id>copy-conf</id>
+            <phase>package</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <encoding>UTF-8</encoding>
+              <!-- 資原始檔輸出目錄 -->
+              <outputDirectory>target/package/conf</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>conf/</directory>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+          <execution>
+            <id>copy-env</id>
+            <phase>package</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <encoding>UTF-8</encoding>
+              <!-- 資原始檔輸出目錄 -->
+              <outputDirectory>target/package/</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>/</directory>
+                  <include>.env</include>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+  
+  <dependencies>
+  	<!--
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.11</version>
+      <scope>test</scope>
+    </dependency>
+    -->
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-api</artifactId>
+      <version>2.17.2</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-core</artifactId>
+      <version>2.17.2</version>
+    </dependency>
+    
+    <!-- https://mvnrepository.com/artifact/io.github.cdimascio/java-dotenv -->
+    <dependency>
+      <groupId>io.github.cdimascio</groupId>
+      <artifactId>java-dotenv</artifactId>
+      <version>5.2.2</version>
+    </dependency>
+    
+    <!-- https://mvnrepository.com/artifact/org.json/json -->
+    <dependency>
+      <groupId>org.json</groupId>
+      <artifactId>json</artifactId>
+      <version>20220320</version>
+    </dependency>
+    
+    <!-- https://mvnrepository.com/artifact/commons-codec/commons-codec -->
+    <dependency>
+      <groupId>commons-codec</groupId>
+      <artifactId>commons-codec</artifactId>
+      <version>1.15</version>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.apache.maven.plugins</groupId>
+      <artifactId>maven-compiler-plugin</artifactId>
+      <version>3.8.1</version>
+    </dependency>
+
+
+  </dependencies>
+
+</project>
